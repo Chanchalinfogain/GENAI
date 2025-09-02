@@ -1,21 +1,20 @@
+import os
 import google.generativeai as genai
+from dotenv import load_dotenv
 
-genai.configure(api_key="AIzaSyBYq1OpCeejvnImmc8kRSWNjbg0mheqiio")
+load_dotenv()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-model = genai.GenerativeModel("gemini-1.5-flash")
+MODEL_NAME = "gemini-1.5-flash"
 
-def ask_gemini(question):
-    response = model.generate_content(question)
-    return response.text
-def chat():
-    print("Gemini Chatbot\n")
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() in ["exit"]:
-            print("Bot: Goodbye! 👋")
-            break
-        answer = ask_gemini(user_input)
-        print("Bot:", answer)
+model = genai.GenerativeModel(MODEL_NAME)
+chat = model.start_chat(history=[])
 
-if __name__ == "__main__":
-    chat()
+print("Gemini Chatbot")
+while True:
+    user_input = input("You: ")
+    if user_input.lower() in ["exit"]:
+        print("Bot: Thank You!")
+        break
+    response = chat.send_message(user_input)
+    print("Bot:", response.text.strip())
